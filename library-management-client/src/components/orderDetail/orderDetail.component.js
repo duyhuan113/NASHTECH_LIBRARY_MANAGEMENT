@@ -50,7 +50,6 @@ const OrderDetail = () => {
           </div>
 
           <div class="invoice-footer">
-            
             <button class="btn btn-primary">{orderData.status}</button>
           </div>
         </div>

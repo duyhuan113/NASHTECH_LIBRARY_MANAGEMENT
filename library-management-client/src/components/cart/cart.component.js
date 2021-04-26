@@ -1,59 +1,55 @@
-import { useEffect, useState } from "react";
-import { GET_BY_ID } from "../../api/apiServices";
-import { useParams } from "react-router-dom";
-
+import { useContext, useEffect, useState } from "react";
+import { POST } from "../../api/apiServices";
+import { CartContext } from "../../contexts/cartContext/CartContext";
+import CurrentUserContext from "../../contexts/currentUserContext";
 
 const CartComponent = () => {
-  const { id } = useParams();
-  console.log(id);
-  const [orderData, setOrderData] = useState(null);
-  useEffect(() => {
-    GET_BY_ID("orders/detail", id).then(
-      (res) => setOrderData(res.data),
-      (err) => console.log(err)
-    );
-  }, []);
+  const { cartItems, clearCart } = useContext(CartContext);
+  const { currentUser } = useContext(CurrentUserContext);
+  const { user } = currentUser;
 
-  console.log(orderData);
+  const handleCheckout = () => {
+    const dataToAdd = {
+      status: "waiting",
+      userId: Number(user.nameid),
+      orderDetails: [],
+    };
+
+    cartItems.map((elm) => dataToAdd.orderDetails.push({ bookId: elm.id }));
+    console.log(dataToAdd);
+    if (cartItems && cartItems.length > 0) {
+      POST("orders", dataToAdd).then(
+        () => {
+          window.alert("Success, please check your history");
+          clearCart();
+        },
+        (err) => console.log(err.response.data)
+      );
+    }
+  };
   return (
     <>
-      {orderData ? (
-        <div class="invoice-card">
-          <div class="invoice-title">
-            <div id="main-title">
-              <h4>INVOICE</h4>
-              <span>#{orderData.id}</span>
-            </div>
+      {cartItems ? (
+        <table>
+          <thead>
+            <tr>
+              <td>TITLE</td>
+              <td>UNIT</td>
+            </tr>
+          </thead>
 
-            <span id="date">{orderData.createdDate.slice(0, 10)}</span>
-          </div>
-
-          <div class="invoice-details">
-            <table class="invoice-table">
-              <thead>
-                <tr>
-                  <td>TITLE</td>
-                  <td>UNIT</td>
-                </tr>
-              </thead>
-
-              <tbody>
-                {orderData.orderDetails.map((elm, i) => (
-                  <tr key={i} class="row-data">
-                    <td>{elm.book.title} </td>
-                    <td id="unit">{elm.itemQuantity}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div class="invoice-footer">
-            <button class="btn btn-primary">{orderData.status}</button>
-          </div>
-        </div>
+          <tbody>
+            {cartItems.map((elm, i) => (
+              <tr key={i}>
+                <td>{elm.title} </td>
+                <td>{elm.quantity}</td>
+              </tr>
+            ))}
+          </tbody>
+          <button onClick={() => handleCheckout()}>Order</button>
+        </table>
       ) : (
-        <h1>Loading...</h1>
+        <h1>Cart is empty</h1>
       )}
     </>
   );

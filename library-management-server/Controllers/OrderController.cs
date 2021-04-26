@@ -104,7 +104,7 @@ namespace R5.Controllers
 
                 if (model.OrderDetails.Count() > 5) return BadRequest("Cannot borrow more than 5 books");
 
-                if (OrderPerMonth > 3) return BadRequest("The number of order / month has exceeded");
+                if (OrderPerMonth > 300) return BadRequest("The number of order / month has exceeded");
 
                 model.CreatedDate = DateTime.Now;
                 _repository.Insert(model);

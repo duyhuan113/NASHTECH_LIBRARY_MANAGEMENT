@@ -12,16 +12,11 @@ const initialState = {
   checkout: false,
 };
 
-
 const CartContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(CartReducer, initialState);
 
   const increase = (payload) => {
     dispatch({ type: "INCREASE", payload });
-  };
-
-  const decrease = (payload) => {
-    dispatch({ type: "DECREASE", payload });
   };
 
   const addProduct = (payload) => {
@@ -36,18 +31,11 @@ const CartContextProvider = ({ children }) => {
     dispatch({ type: "CLEAR" });
   };
 
-  const handleCheckout = () => {
-    console.log("CHECKOUT", state);
-    dispatch({ type: "CHECKOUT" });
-  };
-
   const contextValues = {
     removeProduct,
     addProduct,
     increase,
-    decrease,
     clearCart,
-    handleCheckout,
     ...state,
   };
 

@@ -49,20 +49,8 @@ export const CartReducer = (state, action) => {
         ...sumItems(cartItems),
         cartItems: [...cartItems],
       };
-    case "DECREASE":
-      cartItems[cartItems.findIndex((item) => item.id === action.payload.id)]
-        .quantity--;
-      return {
-        ...state,
-        ...sumItems(cartItems),
-        cartItems: [...cartItems],
-      };
-    case "CHECKOUT":
-      return {
-        cartItems: [],
-        checkout: true,
-        ...sumItems([]),
-      };
+    
+   
     case "CLEAR":
       return {
         cartItems: [],
