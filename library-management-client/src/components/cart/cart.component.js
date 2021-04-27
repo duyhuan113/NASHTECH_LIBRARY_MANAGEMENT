@@ -4,7 +4,7 @@ import { CartContext } from "../../contexts/cartContext/CartContext";
 import CurrentUserContext from "../../contexts/currentUserContext";
 
 const CartComponent = () => {
-  const { cartItems, clearCart } = useContext(CartContext);
+  const { cartItems, clearCart , removeProduct } = useContext(CartContext);
   const { currentUser } = useContext(CurrentUserContext);
   const { user } = currentUser;
 
@@ -35,6 +35,7 @@ const CartComponent = () => {
             <tr>
               <td>TITLE</td>
               <td>UNIT</td>
+              <td></td>
             </tr>
           </thead>
 
@@ -43,6 +44,7 @@ const CartComponent = () => {
               <tr key={i}>
                 <td>{elm.title} </td>
                 <td>{elm.quantity}</td>
+                <td onClick={()=>removeProduct(elm)}>remove</td>
               </tr>
             ))}
           </tbody>

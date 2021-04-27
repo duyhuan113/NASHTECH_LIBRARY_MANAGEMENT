@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { useHistory } from "react-router";
 import { POST } from "../../api/apiServices";
 import CurrentUserContext from "../../contexts/currentUserContext";
+
+import "../../global.styles.css";
 const LoginComponent = () => {
   const { currentUser, setcurrentUser } = useContext(CurrentUserContext);
   const {
@@ -10,36 +12,55 @@ const LoginComponent = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-const history = useHistory()
+  const history = useHistory();
   const onSubmit = (data) => {
     POST("user/login", data)
       .then(
         (res) => {
           localStorage.setItem("token", res.data);
-          
+
           return parseJwt(res.data);
         },
         (err) => console.log(err)
       )
       .then((data) => {
         setcurrentUser(data);
-        setLoginRole(data.role)
+        setLoginRole(data.role);
       });
   };
 
-   const setLoginRole = (role) => {
-     if (role == "admin") {
-       history.push("/ordermanage");
-     } else {
-       history.push("/homepage");
-     }
-   };
+  const setLoginRole = (role) => {
+    if (role == "admin") {
+      history.push("/ordermanage");
+    } else {
+      history.push("/homepage");
+    }
+  };
   return (
-    <div>
+    <div style={{width:"40vw", marginLeft:"30vw"}}>
+      <h1>LOGIN FORM</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <input {...register("username")} />
-        <input {...register("password", { required: true })} />
-        <input type="submit" value="login" />
+        <div class="container">
+          <label for="uname">
+            <b>Username</b>
+          </label>
+          <input
+            type="text"
+            placeholder="Enter Username"
+            name="uname"
+            {...register("username")}
+          />
+          <label for="psw">
+            <b>Password</b>
+          </label>
+          <input
+            type="password"
+            placeholder="Enter Password"
+            name="psw"
+            {...register("password", { required: true })}
+          />
+          <button type="submit">Login</button>
+        </div>
       </form>
     </div>
   );
