@@ -1,14 +1,8 @@
+import React from "react";
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, useHistory } from "react-router-dom";
+import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
 import "antd/dist/antd.css";
-import { Layout, Menu } from "antd";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-  UserOutlined,
-  VideoCameraOutlined,
-  UploadOutlined,
-} from "@ant-design/icons";
+import { Layout } from "antd";
 
 import CurrentUserContext from "./contexts/currentUserContext";
 import MenuComponent from "./components/menu/menu.component";
@@ -30,10 +24,8 @@ import "./App.css";
 const { Header, Sider, Content } = Layout;
 const App = () => {
   const [currentUser, setcurrentUser] = useState({ token: null, user: null });
-  const [collapse, setcollapse] = useState(false);
 
-  const { token, user } = currentUser;
-  const history = useHistory();
+  const { token } = currentUser;
 
   useEffect(() => {
     const tokenJson = localStorage.getItem("token")
@@ -50,46 +42,61 @@ const App = () => {
           <CartContextProvider>
             {token ? (
               <Layout>
-                <Sider trigger={null} collapsible collapsed={collapse}>
+                <Sider trigger={null} collapsible>
                   <div className="logo" />
                   <MenuComponent />
                 </Sider>
+                <Layout className="site-layout">
+                  <Header
+                    className="site-layout-background"
+                    style={{ padding: 0 }}
+                  ></Header>
+                  <Content
+                    className="site-layout-background"
+                    style={{
+                      margin: "24px 16px",
+                      padding: 24,
+                      minHeight: 280,
+                    }}
+                  >
+                    <Route exact path="/ordermanage">
+                      <OrderManage/>
+                    </Route>
 
-                <Route exact path="/ordermanage">
-                  {!token ? <LoginComponent /> : <OrderManage />}
-                </Route>
-                <Route exact path="/orderdetail/:id">
-                  {!token ? <LoginComponent /> : <OrderDetail />}
-                </Route>
-                <Route exact path="/bookmanage">
-                  {!token ? <LoginComponent /> : <BookManage />}
-                </Route>
-                <Route exact path="/bookmanage/add">
-                  {!token ? <LoginComponent /> : <BookAdd />}
-                </Route>
-                <Route exact path="/bookupdate/:id">
-                  {!token ? <LoginComponent /> : <BookUpdate />}
-                </Route>
-                <Route exact path="/categorymanage">
-                  {!token ? <LoginComponent /> : <CategoryManage />}
-                </Route>
-                <Route exact path="/categoryupdate/:id">
-                  {!token ? <LoginComponent /> : <CategoryUpdate />}
-                </Route>
-                <Route exact path="/categorymanage/add">
-                  {!token ? <LoginComponent /> : <CategoryAdd />}
-                </Route>
+                    <Route exact path="/orderdetail/:id">
+                      <OrderDetail />
+                    </Route>
+                    <Route exact path="/bookmanage">
+                      <BookManage />
+                    </Route>
+                    <Route exact path="/bookmanage/add">
+                      <BookAdd />
+                    </Route>
+                    <Route exact path="/bookupdate/:id">
+                      <BookUpdate />
+                    </Route>
+                    <Route exact path="/categorymanage">
+                      <CategoryManage />
+                    </Route>
+                    <Route exact path="/categoryupdate/:id">
+                      <CategoryUpdate />
+                    </Route>
+                    <Route exact path="/categorymanage/add">
+                      <CategoryAdd />
+                    </Route>
 
-                <Route exact path="/homepage">
-                  {!token ? <LoginComponent /> : <HomePageComponent />}
-                </Route>
-                <Route exact path="/history">
-                  {!token ? <LoginComponent /> : <HistoryOrder />}
-                </Route>
+                    <Route exact path="/homepage">
+                      <HomePageComponent />
+                    </Route>
+                    <Route exact path="/history">
+                      <HistoryOrder />
+                    </Route>
 
-                <Route exact path="/cart">
-                  {!token ? <LoginComponent /> : <CartComponent />}
-                </Route>
+                    <Route exact path="/cart">
+                      <CartComponent />
+                    </Route>
+                  </Content>
+                </Layout>
               </Layout>
             ) : (
               <Route exact path="/">

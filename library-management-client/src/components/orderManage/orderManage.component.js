@@ -18,14 +18,24 @@ const OrderManage = () => {
 
   const setStatus = (id, status) => {
     if (status === "confirm") {
-      return <span>confirm</span>;
+      return <span>CONFIRM</span>;
     } else if (status === "reject") {
-      return <span>reject</span>;
+      return <span>REJECT</span>;
     } else {
       return (
         <>
-          <button onClick={() => handleUpdate(id, "confirm")}>confirm</button>
-          <button onClick={() => handleUpdate(id, "reject")}>reject</button>
+          <button
+            style={{ backgroundColor: "green" }}
+            onClick={() => handleUpdate(id, "confirm")}
+          >
+            confirm
+          </button>
+          <button
+            style={{ backgroundColor: "red" }}
+            onClick={() => handleUpdate(id, "reject")}
+          >
+            reject
+          </button>
         </>
       );
     }
@@ -50,7 +60,9 @@ const OrderManage = () => {
                 <td>{elm.orderDetails.length}</td>
                 <td>{setStatus(elm.id, elm.status)}</td>
                 <td>
-                   <Link to={`/orderdetail/${elm.id}`}>Detail</Link>
+                  <button >
+                    <Link style={{ color: "white" }} to={`/orderdetail/${elm.id}`}>Detail</Link>
+                  </button>
                 </td>
               </tr>
             ))

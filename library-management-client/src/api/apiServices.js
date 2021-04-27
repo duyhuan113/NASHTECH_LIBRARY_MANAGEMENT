@@ -5,7 +5,6 @@ const defaultURL = "https://localhost:5001";
 
 const callApi = (endpoint, method = "GET", body) => {
   const url = defaultURL + "/" + endpoint;
-  console.log(url);
   return axios({
     method: method,
     url,

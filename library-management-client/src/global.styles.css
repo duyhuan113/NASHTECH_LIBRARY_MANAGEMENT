@@ -22,19 +22,20 @@
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #4caf50;
+  background-color: #042f66;
   color: white;
 }
 
 /* FORM */
-
 
 form {
   border: 3px solid #f1f1f1;
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="number"],
+select {
   width: 100%;
   padding: 12px 20px;
   margin: 8px 0;
@@ -44,7 +45,7 @@ input[type="password"] {
 }
 
 button {
-  background-color: #4caf50;
+  background-color: #042f66;
   color: white;
   padding: 14px 20px;
   margin: 8px 0;

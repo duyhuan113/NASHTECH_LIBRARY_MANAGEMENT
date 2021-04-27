@@ -10,23 +10,23 @@ const BookComponent = (props) => {
   };
 
   return (
-    <div class="el-wrapper">
-      <div class="box-up">
-        <img class="img" src={imgCover} alt="" />
-        <div class="img-info">
-          <div class="info-inner">
-            <span class="p-name">{title}</span>
+    <div className="el-wrapper">
+      <div className="box-up">
+        <img className="img" src={imgCover} alt="" />
+        <div className="img-info">
+          <div className="info-inner">
+            <span className="p-name">{title}</span>
           </div>
         </div>
       </div>
 
-      <div class="box-down">
-        <div class="h-bg">
-          <div class="h-bg-inner"></div>
+      <div className="box-down">
+        <div className="h-bg">
+          <div className="h-bg-inner"></div>
         </div>
-        <a class="cart" href="#">
-          <span class="price">{quantity} Left</span>
-          <span class="add-to-cart">
+        <a className="cart" href="#">
+          <span className="price">{quantity} Left</span>
+          <span className="add-to-cart">
             {isInCart(props) && (
               <button
                 onClick={() => increase(props)}

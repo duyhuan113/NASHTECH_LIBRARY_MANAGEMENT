@@ -1,10 +1,13 @@
+.root{
+  overflow-y: hidden;
+
+}
 .App {
   text-align: center;
   min-width: 100vw;
   min-height: 100vh;
   height: 100%;
   position: relative;
-  overflow-y: hidden;
 }
 
 .App-logo {
@@ -66,5 +69,5 @@
 }
 
 .site-layout{
-  position: fixed;
+  /* position: fixed; */
 }

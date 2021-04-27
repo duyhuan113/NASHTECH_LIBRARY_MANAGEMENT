@@ -1,10 +1,10 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext} from "react";
 import { POST } from "../../api/apiServices";
 import { CartContext } from "../../contexts/cartContext/CartContext";
 import CurrentUserContext from "../../contexts/currentUserContext";
 
 const CartComponent = () => {
-  const { cartItems, clearCart , removeProduct } = useContext(CartContext);
+  const { cartItems, clearCart, removeProduct } = useContext(CartContext);
   const { currentUser } = useContext(CurrentUserContext);
   const { user } = currentUser;
 
@@ -29,7 +29,7 @@ const CartComponent = () => {
   };
   return (
     <>
-      {cartItems ? (
+      {cartItems && cartItems > 0 ? (
         <table>
           <thead>
             <tr>
@@ -44,7 +44,7 @@ const CartComponent = () => {
               <tr key={i}>
                 <td>{elm.title} </td>
                 <td>{elm.quantity}</td>
-                <td onClick={()=>removeProduct(elm)}>remove</td>
+                <td onClick={() => removeProduct(elm)}>remove</td>
               </tr>
             ))}
           </tbody>

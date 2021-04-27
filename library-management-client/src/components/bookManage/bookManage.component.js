@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 import { GET, DELETE } from "../../api/apiServices";
 
-import "./bookManage.styles.css";
+import "../../global.styles.css";
 const BookManage = () => {
   const [bookData, setbookData] = useState(null);
   const [somethingChange, setsomethingChange] = useState(false);
@@ -48,7 +48,14 @@ const BookManage = () => {
                 <td>
                   <button onClick={() => handleDelete(elm.id)}>Delete</button>
                   <br />
-                  <Link to={`/bookupdate/${elm.id}`}>Update</Link>
+                  <button>
+                    <Link
+                      style={{ color: "white" }}
+                      to={`/bookupdate/${elm.id}`}
+                    >
+                      Update
+                    </Link>
+                  </button>
                 </td>
               </tr>
             ))

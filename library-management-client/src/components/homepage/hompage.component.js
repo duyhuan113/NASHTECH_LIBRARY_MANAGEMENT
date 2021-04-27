@@ -12,9 +12,9 @@ const HomePageComponent = () => {
 
   console.log(bookData);
   return (
-    <div>
+    <>
       {bookData && bookData.map((elm, i) => <BookComponent key={i} {...elm} />)}
-    </div>
+    </>
   );
 };
 

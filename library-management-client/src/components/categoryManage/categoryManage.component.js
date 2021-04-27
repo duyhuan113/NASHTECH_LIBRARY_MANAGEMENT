@@ -44,7 +44,14 @@ const CategoryManage = () => {
                 <td>
                   <button onClick={() => handleDelete(elm.id)}>Delete</button>
                   <br />
-                  <Link to={`/categoryupdate/${elm.id}`}>Update</Link>
+                  <button>
+                    <Link
+                      style={{ color: "white" }}
+                      to={`/categoryupdate/${elm.id}`}
+                    >
+                      Update
+                    </Link>
+                  </button>
                 </td>
               </tr>
             ))

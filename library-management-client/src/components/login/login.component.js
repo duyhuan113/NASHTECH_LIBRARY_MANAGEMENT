@@ -6,11 +6,10 @@ import CurrentUserContext from "../../contexts/currentUserContext";
 
 import "../../global.styles.css";
 const LoginComponent = () => {
-  const { currentUser, setcurrentUser } = useContext(CurrentUserContext);
+  const {  setcurrentUser } = useContext(CurrentUserContext);
   const {
     register,
     handleSubmit,
-    formState: { errors },
   } = useForm();
   const history = useHistory();
   const onSubmit = (data) => {
@@ -30,18 +29,19 @@ const LoginComponent = () => {
   };
 
   const setLoginRole = (role) => {
-    if (role == "admin") {
+    if (role === "admin") {
       history.push("/ordermanage");
     } else {
       history.push("/homepage");
     }
   };
+  
   return (
     <div style={{width:"40vw", marginLeft:"30vw"}}>
       <h1>LOGIN FORM</h1>
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div class="container">
-          <label for="uname">
+        <div className="container">
+          <label >
             <b>Username</b>
           </label>
           <input
@@ -50,7 +50,7 @@ const LoginComponent = () => {
             name="uname"
             {...register("username")}
           />
-          <label for="psw">
+          <label >
             <b>Password</b>
           </label>
           <input
