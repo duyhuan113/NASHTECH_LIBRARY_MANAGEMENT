@@ -1,24 +1,25 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { BrowserRouter as Router, Redirect, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import "antd/dist/antd.css";
 import { Layout } from "antd";
 
 import CurrentUserContext from "./contexts/currentUserContext";
-import MenuComponent from "./components/menu/menu.component";
-import LoginComponent from "./components/login/login.component";
-import OrderManage from "./components/orderManage/orderManage.component";
-import OrderDetail from "./components/orderDetail/orderDetail.component";
-import BookManage from "./components/bookManage/bookManage.component";
-import BookUpdate from "./components/bookUpdate/bookUpdate.component";
-import BookAdd from "./components/bookAdd/bookAdd.component";
-import CategoryManage from "./components/categoryManage/categoryManage.component";
-import CategoryUpdate from "./components/categoryUpdate/categoryUpdate.component";
-import CategoryAdd from "./components/CategoryAdd/categoryAdd.component";
-import HomePageComponent from "./components/homepage/hompage.component";
+import MenuComponent from "./components/common/menu/menu.component";
+import LoginComponent from "./components/common/login/login.component";
+import OrderManage from "./components/adminPage/orderManage/orderManage.component";
+import OrderDetail from "./components/common/orderDetail/orderDetail.component";
+import BookManage from "./components/adminPage/bookManage/bookManage.component";
+import BookUpdate from "./components/adminPage/bookUpdate/bookUpdate.component";
+import BookAdd from "./components/adminPage/bookAdd/bookAdd.component";
+import CategoryManage from "./components/adminPage/categoryManage/categoryManage.component";
+import CategoryUpdate from "./components/adminPage/categoryUpdate/categoryUpdate.component";
+import CategoryAdd from "./components/adminPage/CategoryAdd/categoryAdd.component";
+import HomePageComponent from "./components/clientPage/homePage/hompage.component";
 import CartContextProvider from "./contexts/cartContext/CartContext";
-import HistoryOrder from "./components/historyOrder/historyOrder.component";
-import CartComponent from "./components/cart/cart.component";
+import HistoryOrder from "./components/clientPage/historyOrder/historyOrder.component";
+import CartComponent from "./components/clientPage/cart/cart.component";
+
 import "./App.css";
 
 const { Header, Sider, Content } = Layout;
@@ -60,7 +61,7 @@ const App = () => {
                     }}
                   >
                     <Route exact path="/ordermanage">
-                      <OrderManage/>
+                      <OrderManage />
                     </Route>
 
                     <Route exact path="/orderdetail/:id">
@@ -84,7 +85,6 @@ const App = () => {
                     <Route exact path="/categorymanage/add">
                       <CategoryAdd />
                     </Route>
-
                     <Route exact path="/homepage">
                       <HomePageComponent />
                     </Route>

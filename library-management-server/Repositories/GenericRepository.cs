@@ -10,7 +10,7 @@ namespace R5.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : BaseEntity
     {
-        protected readonly F5DbContext Context;
+        protected readonly F5DbContext Context; 
         protected readonly DbSet<T> Entities;
 
         public GenericRepository(F5DbContext context)
@@ -46,7 +46,6 @@ namespace R5.Repositories
             {
                 throw new ArgumentNullException("entity");
             }
-
             Context.SaveChanges();
         }
         public void Delete(T entity)

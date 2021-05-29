@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using R5.Models;
 using R5.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -25,80 +26,82 @@ namespace R5.Controllers
             _bookRepository = bookRepository;
         }
 
-
         // GET: api/<BookController>
         [Authorize(Roles = "admin")]
         [HttpGet("all")]
-        public IEnumerable<Order> Get()
+        public ActionResult<List<Order>> Get()
         {
+            try
+            {
+                var list = _repository.GetAll(b => b.OrderDetails).ToList();
 
-            var list = _repository.GetAll(b => b.OrderDetails).AsEnumerable();
+                if (list != null) return list;
 
-            if (list != null) return list;
-
-            return (IEnumerable<Order>)BadRequest("Canot Found.");
-
+                return BadRequest("Canot Found.");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
+            }
         }
 
         [Authorize(Roles = "user")]
         [HttpGet("{Id}")]
-        public IEnumerable<Order> GetAllByUserId(int Id)
+        public ActionResult<List<Order>> GetAllByUserId(int Id)
         {
-            if (Id == null)
+            try
             {
-                return (IEnumerable<Order>)BadRequest("ID Invalid! ");
-
-            }
-            Console.WriteLine(Id);
-
-            var listOrder = _repository.GetAll(o => o.OrderDetails).Where(o => o.UserId == Id).AsEnumerable();
-
-
-            if (listOrder != null)
-            {
-                return listOrder;
-            }
-            return (IEnumerable<Order>)BadRequest("Cannot Found");
-
-        }
-
-        [Authorize(Roles = "user,admin")]
-        [HttpGet("detail/{Id}")]
-        public Order GetOneById(int Id)
-        {
-            if (Id != null)
-            {
-                Console.WriteLine(Id);
-
-                var listOrder = _repository.GetOneById(Id);
+                if (Id == null)
+                {
+                    return BadRequest("ID Invalid! ");
+                }
+                var listOrder = _repository.GetAll(o => o.OrderDetails).Where(o => o.UserId == Id).ToList();
 
                 if (listOrder != null)
                 {
                     return listOrder;
                 }
-                return (Order)BadRequest("Cannot Found");
-
+                return BadRequest("Cannot Found");
             }
-            return (Order)BadRequest("ID Invalid! ");
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
+            }
+        }
+
+        [Authorize(Roles = "user,admin")]
+        [HttpGet("detail/{Id}")]
+        public ActionResult<Order> GetOneById(int Id)
+        {
+            try
+            {
+                if (Id != null)
+                {
+                    Console.WriteLine(Id);
+
+                    var listOrder = _repository.GetOneById(Id);
+
+                    if (listOrder != null)
+                    {
+                        return listOrder;
+                    }
+                    return (Order)BadRequest("Cannot Found");
+
+                }
+                return (Order)BadRequest("ID Invalid! ");
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
+            }
         }
 
         [Authorize(Roles = "user")]
         [HttpPost]
         public ActionResult CreateOrder(Order model)
         {
-
-            if (!ModelState.IsValid) return BadRequest();
             try
             {
-                //{
-                //    "status": "waiting",
-                //    "userId": 1,
-                //    "orderDetails": [
-                //       {
-                //        "bookId": 2
-                //       }
-                //    ] 
-                //}
                 var OrderPerMonth = _repository.GetAll().Count(o => o.UserId == model.UserId && o.CreatedDate.Month == DateTime.Now.Month);
                 Console.WriteLine(OrderPerMonth);
 
@@ -133,23 +136,24 @@ namespace R5.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(int Id, Order model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            var order = _repository.Get(Id);
-
-            if (order != null)
+            try
             {
-                order.Status = model.Status;
-                order.ModifiedDate = DateTime.Now;
+                if (!ModelState.IsValid) return BadRequest();
+                var order = _repository.Get(Id);
+                if (order != null)
+                {
+                    order.Status = model.Status;
+                    order.ModifiedDate = DateTime.Now;
 
-                _repository.Update(order);
-                return Ok();
+                    _repository.Update(order);
+                    return Ok();
+                }
+                return BadRequest();
             }
-
-            return BadRequest();
+            catch (Exception)
+            {
+                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+            }
         }
-
-
-
     }
 }

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using R5.Models;
 using R5.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -24,45 +25,54 @@ namespace R5.Controllers
         }
 
         // GET: api/<BookController>
-        [Authorize(Roles ="user,admin")]
+        [Authorize(Roles = "user,admin")]
         [HttpGet("all")]
-        public IEnumerable<BookModel> Get()
+        public ActionResult<List<BookModel>> Get()
         {
-            return _repository.GetAll(b => b.Author, b => b.Category).Select(b => new BookModel
+            try
             {
-                Id = b.Id,
-                Title = b.Title,
-                Quantity = b.Quantity,
-                ImgCover = b.ImgCover,
-                Author = b.Author != null ? new AuthorModel
+                return _repository.GetAll(b => b.Author, b => b.Category).Select(b => new BookModel
                 {
-                    Id = b.Author.Id,
-                    Name = b.Author.Name
-                } : null,
-                Category = b.Category != null ? new CategoryModel
-                {
-                    Id = b.Category.Id,
-                    Name = b.Category.Name
-                } : null
-            }).AsEnumerable();
+                    Id = b.Id,
+                    Title = b.Title,
+                    Quantity = b.Quantity,
+                    ImgCover = b.ImgCover,
+                    Author = b.Author != null ? new AuthorModel
+                    {
+                        Id = b.Author.Id,
+                        Name = b.Author.Name
+                    } : null,
+                    Category = b.Category != null ? new CategoryModel
+                    {
+                        Id = b.Category.Id,
+                        Name = b.Category.Name
+                    } : null
+                }).ToList();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
+
+            }
+
         }
 
         [Authorize(Roles = "admin")]
         [HttpGet("{id}")]
-        public Book Get(int Id)
+        public ActionResult<Book> Get(int Id)
         {
-            Console.WriteLine(Id);
+            try
+            {
+                var book = _repository.Get(Id);
+                return book;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
 
-            var book = _repository.Get(Id);
-
-            return book;
+            }
         }
 
-       
-
-
-
-       
         // POST 
         [HttpPost]
         public ActionResult Post(BookInputModel model)
@@ -89,7 +99,8 @@ namespace R5.Controllers
             }
             catch (Exception)
             {
-                return new StatusCodeResult((int)HttpStatusCode.InternalServerError);
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
+
             }
         }
 
@@ -98,38 +109,53 @@ namespace R5.Controllers
         public ActionResult Put(int Id, BookInputModel model)
         {
             if (!ModelState.IsValid) return BadRequest();
-
-            var book = _repository.Get(Id);
-
-            if (book != null)
+            try
             {
-                book.Title = model.Title;
-                book.CategoryId = model.CategoryId;
-                book.AuthorId = model.AuthorId;
-                book.ImgCover = model.ImgCover;
-                book.Quantity = model.Quantity;
+                var book = _repository.Get(Id);
 
-                _repository.Update(book);
-                return Ok(book);
+                if (book != null)
+                {
+                    book.Title = model.Title;
+                    book.CategoryId = model.CategoryId;
+                    book.AuthorId = model.AuthorId;
+                    book.ImgCover = model.ImgCover;
+                    book.Quantity = model.Quantity;
+
+                    _repository.Update(book);
+                    return Ok(book);
+                }
+
+                return BadRequest();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
             }
 
-            return BadRequest();
         }
 
         // DELETE api/<BookController>/5
         [HttpDelete("{id}")]
         public ActionResult Delete(int Id)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            var entity = _repository.Get(Id);
-            if (entity != null)
+            try
             {
-                _repository.Delete(entity);
-                return Ok("Delete Success");
+                if (!ModelState.IsValid) return BadRequest();
+
+                var entity = _repository.Get(Id);
+                if (entity != null)
+                {
+                    _repository.Delete(entity);
+                    return Ok("Delete Success");
+                }
+
+                return BadRequest();
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
             }
 
-            return BadRequest();
 
         }
     }

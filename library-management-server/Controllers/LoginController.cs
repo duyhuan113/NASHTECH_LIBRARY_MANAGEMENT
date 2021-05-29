@@ -14,6 +14,7 @@ using System.Text;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace R5.Controllers
 {
@@ -35,14 +36,13 @@ namespace R5.Controllers
                     new Claim(ClaimTypes.Role, user.Role.ToString()),
                     new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddMinutes(1000),
+                Expires = DateTime.UtcNow.AddMinutes(100),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(descriptor);
             return tokenHandler.WriteToken(token);
         }
     }
-
 
 
     [Route("user")]
@@ -62,39 +62,49 @@ namespace R5.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<dynamic>> Authenticate(User model)
         {
-            var user = _repository.GetAll().FirstOrDefault(u => u.UserName == model.UserName && u.Password == model.Password);
+            try
+            {
+                var user = _repository.GetAll().FirstOrDefault(u => u.UserName == model.UserName && u.Password == model.Password);
 
-            if (user == null)
-                return NotFound("User or Password Invalid.");
+                if (user == null)
+                    return NotFound("User or Password Invalid.");
 
-            var token = TokenService.CreateToken(user);
-            return token;
+                var token = TokenService.CreateToken(user);
+                return token;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Create Token.");
+            }
         }
-        
-
-        //[HttpPost("logout")]
-        //public async System.Threading.Tasks.Task<IActionResult> LogoutAsync()
-        //{
-        //    await HttpContext.SignOutAsync(
-        //    CookieAuthenticationDefaults.AuthenticationScheme);
-
-        //    return Ok("Logout thanh cong");
-        //}
 
         [HttpGet("all")]
-        public IEnumerable<User> GetAll()
+        public ActionResult<List<User>> GetAll()
         {
+            try
+            {
+                var user = _repository.GetAll(u => u.Orders).ToList();
+                return user;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Create Token.");
+            }
 
-            var user = _repository.GetAll(u => u.Orders).AsEnumerable();
-            return user;
         }
 
         [HttpGet("{id}")]
-        public IEnumerable<User> GetById(int id)
+        public ActionResult<List<User>> GetById(int id)
         {
-            var user = _repository.GetAll(u => u.Orders).Where(o => o.Id == id).AsEnumerable();
-            return user;
+            try
+            {
+                var user = _repository.GetAll(u => u.Orders).Where(o => o.Id == id).ToList();
+                return user;
+            }
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Create Token.");
+            }
         }
-
     }
 }

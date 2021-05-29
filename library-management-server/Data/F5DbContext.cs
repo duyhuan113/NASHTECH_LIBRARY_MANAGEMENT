@@ -10,8 +10,6 @@ namespace R5.Data
     public class F5DbContext : DbContext
     {
 
-
-
         public F5DbContext(DbContextOptions<F5DbContext> options) :
             base(options)
         {
@@ -23,14 +21,6 @@ namespace R5.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            //builder.Entity<Book>()
-            //    .HasMany(b => b.Orders)
-            //    .WithMany(od => od.Books);
-
-            //builder.Entity<Order>()
-            // .HasMany(o => o.Books)
-            // .WithMany(od => od.Orders);
-
             builder.Entity<Book>()
                 .HasMany(a => a.OrderDetails)
                 .WithOne(b => b.Book)
@@ -46,7 +36,6 @@ namespace R5.Data
             builder.Entity<OrderDetail>()
                 .HasKey(od => new { od.OrderId, od.BookId });
 
-
             builder.Entity<Author>()
                 .HasMany(a => a.Books)
                 .WithOne(b => b.Author)
@@ -59,14 +48,10 @@ namespace R5.Data
                 .HasForeignKey(b => b.CategoryId)
                 .IsRequired();
 
-
-
             builder.Entity<User>()
                 .HasMany(u => u.Orders)
                 .WithOne(o => o.User)
                 .HasForeignKey(u => u.UserId);
-
-
 
             builder.Entity<User>()
                 .HasData(

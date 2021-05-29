@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using R5.Models;
 using R5.Repositories;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -87,38 +88,45 @@ namespace R5.Controllers
         [HttpPut("{id}")]
         public ActionResult Put(int Id, CategoryModel model)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            var entity = _repository.Get(Id);
-
-            if (entity != null)
+            try
             {
-                entity.Name = model.Name;
-                entity.ModifiedDate = DateTime.Now;
+                var entity = _repository.Get(Id);
 
-                _repository.Update(entity);
-                return Ok(entity);
+                if (entity != null)
+                {
+                    entity.Name = model.Name;
+                    entity.ModifiedDate = DateTime.Now;
+
+                    _repository.Update(entity);
+                    return Ok(entity);
+                }
+
+                return BadRequest();
             }
-
-            return BadRequest();
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
+            }
         }
 
         // DELETE api/<BookController>/5
         [HttpDelete("{id}")]
         public ActionResult Delete(int Id)
         {
-            if (!ModelState.IsValid) return BadRequest();
-
-            var entity = _repository.Get(Id);
-            if (entity != null)
+            try
             {
-                _repository.Delete(entity);
-                return Ok("Delete Success");
+                var entity = _repository.Get(Id);
+                if (entity != null)
+                {
+                    _repository.Delete(entity);
+                    return Ok("Delete Success");
+                }
+                return BadRequest("Canot Found");
             }
-            return BadRequest("Canot Found");
+            catch (Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "Error Retrieving Data");
+            }
         }
-
-
-
     }
 }

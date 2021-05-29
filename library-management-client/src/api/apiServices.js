@@ -3,16 +3,22 @@ import axios from "axios";
 
 const defaultURL = "https://localhost:5001";
 
+const getToken = () => {
+  let token = localStorage.getItem("token");
+  return token ? `Bearer ${token}` : "";
+};
+
 const callApi = (endpoint, method = "GET", body) => {
   const url = defaultURL + "/" + endpoint;
+
   return axios({
     method: method,
     url,
+    data: JSON.stringify(body),
     headers: {
       "Content-Type": "application/json; charset=utf-8",
-      Authorization: `Bearer ${getToken()}`,
+      Authorization: getToken(),
     },
-    data: JSON.stringify(body),
   });
 };
 
@@ -35,8 +41,4 @@ export const DELETE = (endpoint, id) => {
 
 export const GET_BY_ID = (endpoint, id) => {
   return callApi(endpoint + "/" + id, "GET");
-};
-
-const getToken = () => {
-  return localStorage.getItem("token") ? localStorage.getItem("token") : "";
 };
